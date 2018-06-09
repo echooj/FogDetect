@@ -1,0 +1,22 @@
+//
+//  PrefixHeader.pch
+//  FogDetecting
+//
+//  Created by J Echoo on 2018/5/21.
+//  Copyright © 2018年 J.Echoo. All rights reserved.
+//
+#import <Availability.h>
+#ifndef PrefixHeader_pch
+#define PrefixHeader_pch
+
+#ifdef __cplusplus
+#import <opencv2/opencv.hpp>
+#endif
+#ifdef __OBJC__
+#import <UIKit/UIKit.h>
+#import <Foundation/Foundation.h>
+#endif
+
+
+
+#endif /* PrefixHeader_pch */
