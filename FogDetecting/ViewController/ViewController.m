@@ -22,6 +22,7 @@ extern uint64_t dispatch_benchmark(size_t count, void (^block)(void));
 - (IBAction)Evaluate:(id)sender {
     //测试
     //测试2
+    //test3
     dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     // 获取主队列
     dispatch_queue_t mainQueue = dispatch_get_main_queue();
