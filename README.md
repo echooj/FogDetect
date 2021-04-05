@@ -12,7 +12,9 @@
 图像中雾霾程度的评价是图像增强处理的第一步，从方法上可以分为主观评价方法和客观评价方法，前者凭感知者主观感受评价;后者依据模型给出的量化指标或参数衡量。客观评价的目标使得评价模型准确地反映人眼视觉感知的主观评价。本课题研究基于自然场景统计特征(NSS)和其他感知特征的雾霾浓度评价研究，使得对于输入的图像，准确输出评价值。
 
 先给展示一下demo
+
 ![demo.gif](https://upload-images.jianshu.io/upload_images/10826585-494a97a3a5182bc5.gif?imageMogr2/auto-orient/strip)
+
 操作步骤：
 1.选取图片，然后可以从手机相册中选择一张图片，也可以拍照
 2.可以修改尺寸大小，点击完成
@@ -42,7 +44,7 @@
 
 这里仅贴一下部分我认为比较重要的代码，具体实现细节请参考我的github：[https://github.com/echooj/FogDetect](https://github.com/echooj/FogDetect)
 当然，懒得看代码的同学可以直接跳到测试结果部分，就是有一张可爱的小蘑菇图的位置
-###基础过程
+### 基础过程
 1. 图像尺寸的测量和 RGB 值的获取
 
 先提取图像的尺寸，然后修改图像尺寸，使得图像的宽和高能够被8整除，最后提取修改后的图像的R、G、B值和灰度值Ig。
@@ -283,10 +285,10 @@ Mat Df = NewMean(distance_patch);
 Mat distance_patch_t = distance_patch.t();
 Mat Df_map = NewReshape(distance_patch_t, row / ps);
 ```
-###雾霾程度的获取
+### 雾霾程度的获取
 概述:首先获取雾霾密度值，然后根据雾霾密度值计算雾霾程度。即先利用D = Df / (Dff + 1)获取雾霾密度值，然后根据雾霾密度值D在0 ≤ D < 1为低，1 < D ≤ 3为中，雾霾密度值D在D > 3为高，进行雾霾程度输出。
 
-#五. 测试结果
+# 五. 测试结果
 * 首先我们载入一张雾霾程度比较低的图片
 ![0FC0084E60774D5FF1CC0F5D46650C8B.jpg](https://upload-images.jianshu.io/upload_images/10826585-14f46bd44c1bda39.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 * 再载入一张雾霾程度较高的图片
@@ -294,7 +296,7 @@ Mat Df_map = NewReshape(distance_patch_t, row / ps);
 通过以上分析，我们可以判断这个算法输出的客观评价和人的主观评价相符，大家也可下载demo载入一些其他的图片测试，雾霾程度客观评价值越高，说明雾霾程度越严重。
 
 
-#六. 遇到的坑以及处理方法
+# 六. 遇到的坑以及处理方法
 1. Xcode和Visual Studio毕竟是不同平台，iOS对于OpenCV的支持不如VS那么简单，不能做到一行代码调用多个函数
 ```
 //像下面这种代码VS中可以运行，但是Xcode就不行，需要将一个函数拆分为多个函数
@@ -345,15 +347,20 @@ cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
         });
     });
 ```
+
 # 总结
 客观评价的目标使得评价模型准确地反映人眼视觉感知的主观评价。本课题研究基于自然场景统计特征(NSS)和其他感知特征的雾霾浓度评价研究，使得对于输入的图像，准确输出评价值。测试表明，客观评价的值符合人的主观评价，客观评价值越高，雾霾程度越高。
 
 源代码不包含 opencv2.framework，请自行下载后添加进项目中。
 最后，附上demo地址https://github.com/echooj/FogDetect，希望大家帮忙点个赞
 该demo目前没有做屏幕适配，原因是本人有点懒-_-，请大家用4.7寸的设备运行，有任何问题可以简书私戳我，谢谢大家。
->本文算法的主要参考文章
+
+
+### 参考文章
+
+```
 [1] Lark Kwon Choi, Jaehee You, and Alan Conrad Bovik, Referenceless Prediction of Perceptual Fog Density. TIP, 2015.
 [2] and Perceptual Image DefoggingAnish Mittal, Anush Krishna Moorthy, and Alan Conrad Bovik. No-Reference Image Quality Assessment in the Spatial Domain. TIP, 2012.
 [3] Rafael C.Gonzalez，Richard E.Woods，Steven L.Eddins 著，阮秋琦等译.数字图像处 理(MATLAB 版)[M].北京:电子工业出版社，2005:58-60.
 [4]基于 OpenCV 的 iOS 客户端答题卡识别算法https://www.jianshu.com/p/eed90371a3a6
->
+```
