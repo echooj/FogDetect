@@ -382,8 +382,7 @@ cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
 客观评价的目标使得评价模型准确地反映人眼视觉感知的主观评价。本课题研究基于自然场景统计特征(NSS)和其他感知特征的雾霾浓度评价研究，使得对于输入的图像，准确输出评价值。测试表明，客观评价的值符合人的主观评价，客观评价值越高，雾霾程度越高。
 
 源代码不包含 opencv2.framework，请自行下载后添加进项目中。
-最后，附上demo地址https://github.com/echooj/FogDetect，希望大家帮忙点个赞
-该demo目前没有做屏幕适配，原因是本人有点懒-_-，请大家用4.7寸的设备运行，有任何问题可以简书私戳我，谢谢大家。
+该demo目前没有做屏幕适配，请大家用4.7寸的设备运行，有任何问题可以简书私戳我，谢谢大家。
 
 
 ### 参考文章
@@ -395,5 +394,5 @@ cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
 
 [3] Rafael C.Gonzalez，Richard E.Woods，Steven L.Eddins 著，阮秋琦等译.数字图像处 理(MATLAB 版)[M].北京:电子工业出版社，2005:58-60.
 
-[4] 基于 OpenCV 的 iOS 客户端答题卡识别算法https://www.jianshu.com/p/eed90371a3a6
+[4] [基于 OpenCV 的 iOS 客户端答题卡识别算法](https://www.jianshu.com/p/eed90371a3a6)
 
