@@ -42,12 +42,13 @@
 
 # 四.算法具体实现细节和主要代码
 
-这里仅贴一下部分我认为比较重要的代码，具体实现细节请参考我的github：[https://github.com/echooj/FogDetect](https://github.com/echooj/FogDetect)
+这里仅贴一下部分我认为比较重要的代码，具体实现细节请参考我的github中的Souce Code
 当然，懒得看代码的同学可以直接跳到测试结果部分，就是有一张可爱的小蘑菇图的位置
 ### 基础过程
 1. 图像尺寸的测量和 RGB 值的获取
 
 先提取图像的尺寸，然后修改图像尺寸，使得图像的宽和高能够被8整除，最后提取修改后的图像的R、G、B值和灰度值Ig。
+
 ```
 vector<Mat> channels;
 Mat Ig;
@@ -60,8 +61,10 @@ Blue = channels.at(0);
 Green = channels.at(1);
 Red = channels.at(2);
 ```
+
 2. HSV 空间的转换
 将图像转换到HSV空间，并获取s(饱和度)的值。
+
 ```
 Mat I_hsv;
 Mat Is;
@@ -72,8 +75,10 @@ Is = channels2.at(1);
 Is.convertTo(Is,CV_64F);
 Is=Is/255;
 ```
+
 3. 暗通道先验
 利用了何凯明的暗通道先验的实现过程。首先先将R,G,B格式转换从uchar到double，然后进行 归一化处理，使得取值范围在0-1之间，最后利用两个min得到Id。
+
 ```
 Mat blue = Mat_<double>(Blue);
 Mat green = Mat_<double>(Green);
@@ -85,8 +90,10 @@ Mat Id;
 min(Irn, Ign, Id);
 min(Id, Ibn, Id);
 ```
+
 4. MSCN 系数的获得以及 rg 和 by 通道的获得
 获得MSCN系数和cv。先制作MSCN_window的模板，然后对Ig和 MSCN_window进行实现线性空间滤波函数中的相关运算得到mu;同样利用Ig.*Ig和 MSCN_window的滤波运算再和mu_sq进行做差，最后开方得到sigma;利用(Ig- mu)./(sigma+1)得到MSCN系数。rg和by通道获得是利用OpenCV函数进行常规的矩 阵运算即可。
+
 ```
 // MSCN
 Mat Ignew;
@@ -114,6 +121,7 @@ Blue.convertTo(B, CV_64F);
 Mat rg = R - G;
 Mat by = 0.5*(R + G) - B;
 ```
+
 ### 雾感知统计特征的提取
 f1,f2...f12共12个雾感统计特征，具体功能可以参考表格2.1
 ![image.png](https://upload-images.jianshu.io/upload_images/10826585-a2793242cb914c9c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
@@ -121,12 +129,15 @@ f1,f2...f12共12个雾感统计特征，具体功能可以参考表格2.1
 * f1:
 
 (1)概述:f1的提取，f1的功能可以参考表格2.1。
+
 ```
 Mat tempbb = im2col(MSCN, ps);
 Mat tempcc = var(tempbb);//
 Mat MSCN_var = NewReshape(tempcc, row / ps);
 ```
+
 (2)im2col的功能:重排矩阵列;
+
 ```
 Mat im2col(Mat &InputMat, int ps)
 { int row = InputMat.rows / ps;
@@ -162,9 +173,11 @@ for (int j = 0; j < outputMat.cols; j++)
 outputMat.at<double>(i, j) = t2[j].at<double>(i, 0);
 return outputMat;}
 ```
+
 (3)nanvar的功能:忽视掉NaN的方差的计算，注意分母是n-1;
 
 (4)reshape的功能:重新调整矩阵的行数、列数。
+
 ```
 Mat NewReshape(Mat &InputMat, int ps)
 { int row = 1;
@@ -186,6 +199,7 @@ return outputMat;}
 * 雾感知统计特征中 f2 和 f3 的提取
 
 (1)概述:f2和f3的提取，详情请参考以下代码。
+
 ```
 Mat temp_vertical = circshift(MSCN, 1);
 Mat temp_vertical2 = MSCN.mul(temp_vertical);
@@ -203,6 +217,7 @@ MSCN_V_pair_col_temp2.at<double>(i, j) = 0;
 Mat MSCN_V_pair_L_var=NewReshape(nanvar(MSCN_V_pair_col_temp1),row/ps);
 Mat MSCN_V_pair_R_var=NewReshape(nanvar(MSCN_V_pair_col_temp2),row/ ps);
 ``` 
+
 (2)cirshift: 矩阵循环平移。因为整个项目只用到了一次循环移位，所以该函数是特殊的 循环移位，也就是按列方向循环向下移动一位的函数。
 
 * 雾感知统计特征的 f4 和 f5 的提取
@@ -220,6 +235,7 @@ Entropy的即图像熵-sum(p.*log2(p))的实现算法:
 a. 利用temp[256]数组做一个类似统计表的功能，统计图像对应的0-255灰度值对 应的像素个数;
 b. 计算每一个个像素的概率;
 c. 根据定义计算图像熵。
+
 ```
 double Entropy(Mat img)
 { double temp[256];
@@ -245,6 +261,7 @@ result = result - temp[i] * (log(temp[i]) / log(2.0));
 }
 return result; }
 ```
+
 (3)num2cell:将矩阵中的数据转成一个一个的孢元。 
 (4)cellfun:对每个孢元单独计算.
 * 雾感知统计特征的 f12 的提取
@@ -259,6 +276,7 @@ return result; }
 (1)概述:实现距离计算，包括了很多中间步骤
 * 雾霾等级计算
 (1)概述:Df和Df_map的获得，这个部分的完结。
+
 ```
 Mat** distance_patch_t1 = new Mat *[mu_matrix.rows];
 for (int i = 0; i<mu_matrix.rows; ++i)
@@ -285,10 +303,12 @@ Mat Df = NewMean(distance_patch);
 Mat distance_patch_t = distance_patch.t();
 Mat Df_map = NewReshape(distance_patch_t, row / ps);
 ```
+
 ### 雾霾程度的获取
 概述:首先获取雾霾密度值，然后根据雾霾密度值计算雾霾程度。即先利用D = Df / (Dff + 1)获取雾霾密度值，然后根据雾霾密度值D在0 ≤ D < 1为低，1 < D ≤ 3为中，雾霾密度值D在D > 3为高，进行雾霾程度输出。
 
 # 五. 测试结果
+
 * 首先我们载入一张雾霾程度比较低的图片
 ![0FC0084E60774D5FF1CC0F5D46650C8B.jpg](https://upload-images.jianshu.io/upload_images/10826585-14f46bd44c1bda39.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 * 再载入一张雾霾程度较高的图片
@@ -297,28 +317,37 @@ Mat Df_map = NewReshape(distance_patch_t, row / ps);
 
 
 # 六. 遇到的坑以及处理方法
+
 1. Xcode和Visual Studio毕竟是不同平台，iOS对于OpenCV的支持不如VS那么简单，不能做到一行代码调用多个函数
+
 ```
 //像下面这种代码VS中可以运行，但是Xcode就不行，需要将一个函数拆分为多个函数
 Mat MSCN_V_pair_L_var=NewReshape(nanvar(MSCN_V_pair_col_temp1),row/ps);
 ```
+
 ```
 //举个例子，Xcode中需要一步一步
 temp=nanvar(MSCN_V_pair_col_temp1)；
 Mat MSCN_V_pair_L_var=NewReshape（temp，row/ps）；
 ```
+
 2. VS中很多函数调用using namespace cv就可以了，但是Xcode的对这个的支持似乎不好，很多函数都要加上cv::
+
 ```
 //Xcode需要以下的写法，VS的rect不需要加cv了
 Mat outputMat = InputMat(cv::Rect(0, 0, patch_col_num * ps, patch_row_num * ps));
 ```
+
 3. iOS 真机测试中，iOS的机器在载入图片的时候容易报内存不足导致闪退，这个在模拟器上不会出现这个问题。这个问题原因存在于，iOS照相保存的图片文件过大，导致这个算法需要运行耗的内存过多，所以我对于这个解决办法是先压缩图片，然后在将图片进行之后的处理。之后在iPhone 5s和7上测试后都可以完美运行了。
+
 ```
 //图像压缩
 cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
 ```
+
 4. 运行算法的时候需要一些时间，导致app有点卡
 解决方法是利用了GCD处理多线程，将处理算法的程序运行在线程中，在运行完成后再回到主线程中更新UI.
+
 ```
  dispatch_queue_t queue = dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0);
     // 获取主队列
@@ -348,6 +377,7 @@ cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
     });
 ```
 
+
 # 总结
 客观评价的目标使得评价模型准确地反映人眼视觉感知的主观评价。本课题研究基于自然场景统计特征(NSS)和其他感知特征的雾霾浓度评价研究，使得对于输入的图像，准确输出评价值。测试表明，客观评价的值符合人的主观评价，客观评价值越高，雾霾程度越高。
 
@@ -358,9 +388,12 @@ cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
 
 ### 参考文章
 
-```
+
 [1] Lark Kwon Choi, Jaehee You, and Alan Conrad Bovik, Referenceless Prediction of Perceptual Fog Density. TIP, 2015.
+
 [2] and Perceptual Image DefoggingAnish Mittal, Anush Krishna Moorthy, and Alan Conrad Bovik. No-Reference Image Quality Assessment in the Spatial Domain. TIP, 2012.
+
 [3] Rafael C.Gonzalez，Richard E.Woods，Steven L.Eddins 著，阮秋琦等译.数字图像处 理(MATLAB 版)[M].北京:电子工业出版社，2005:58-60.
-[4]基于 OpenCV 的 iOS 客户端答题卡识别算法https://www.jianshu.com/p/eed90371a3a6
-```
+
+[4] 基于 OpenCV 的 iOS 客户端答题卡识别算法https://www.jianshu.com/p/eed90371a3a6
+
