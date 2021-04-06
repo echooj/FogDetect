@@ -1,8 +1,6 @@
 ![zhang-kaiyv-FmyIBz2JDHU-unsplash3.jpg](https://upload-images.jianshu.io/upload_images/10826585-b45aa84084a710b3.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 
 
-
-
 # 一. 前言：
 
 当年在武大电信院做毕业设计的时候，我的导师希望我用C代码完成彩色图像的雾霾程度评价，如果时间允许，能够开发出一款APP完成移动端的实现。很可惜，当时我对于iOS开发一无所知，时间不允许我完成移动端的实现，但是完成了Windows端的实现，利用MFC做了一个毕业设计展示。还记得当时花了很多时间研究图像处理，一步一步实现每一个算法细节，辛苦却可以感受到满满的收获。
@@ -313,6 +311,7 @@ Mat Df_map = NewReshape(distance_patch_t, row / ps);
 ![0FC0084E60774D5FF1CC0F5D46650C8B.jpg](https://upload-images.jianshu.io/upload_images/10826585-14f46bd44c1bda39.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
 * 再载入一张雾霾程度较高的图片
 ![D875521A9C5C3638B3CE2B1B35A02C5B.jpg](https://upload-images.jianshu.io/upload_images/10826585-bdb7cd37b2187073.jpg?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240)
+
 通过以上分析，我们可以判断这个算法输出的客观评价和人的主观评价相符，大家也可下载demo载入一些其他的图片测试，雾霾程度客观评价值越高，说明雾霾程度越严重。
 
 
@@ -382,7 +381,7 @@ cv::resize(inputMat, tmp, cv::Size(inputMat.rows / 2, inputMat.cols/ 2));
 客观评价的目标使得评价模型准确地反映人眼视觉感知的主观评价。本课题研究基于自然场景统计特征(NSS)和其他感知特征的雾霾浓度评价研究，使得对于输入的图像，准确输出评价值。测试表明，客观评价的值符合人的主观评价，客观评价值越高，雾霾程度越高。
 
 源代码不包含 opencv2.framework，请自行下载后添加进项目中。
-该demo目前没有做屏幕适配，请大家用4.7寸的设备运行，有任何问题可以简书私戳我，谢谢大家。
+该demo目前没有做屏幕适配，请大家用4.7寸的设备运行，有任何问题可以issue我。
 
 
 ### 参考文章
