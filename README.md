@@ -11,12 +11,14 @@
 
 先给展示一下demo
 
-![demo.gif](https://upload-images.jianshu.io/upload_images/10826585-494a97a3a5182bc5.gif?imageMogr2/auto-orient/strip)
+![avatar](demo.gif)
 
 操作步骤：
 1.选取图片，然后可以从手机相册中选择一张图片，也可以拍照
 2.可以修改尺寸大小，点击完成
 3.点击雾霾程度分析的button，就可以看到给出这张图片的雾霾程度的客观评价值
+
+### 本开源项目对应的简书: https://www.jianshu.com/p/e44c26b7eb3e
 
 # 二. 前期准备
 考虑到 OpenCV 是基于 C/C++ 可跨平台的通用 Lib，为了降低学习成本，便将整个学习和实验集成到 iOS 的开发环境里了。前期要做如下几方面的准备工作：
